@@ -35,11 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 감정 데이터 배열 (mainEmoji 경로, cardBgColor 및 bodyBgColor 포함)
   const emotions = [
-    { id: 'happy', label: '아주 좋음', mainEmoji: 'public/emotions/01_happy_행복.png', bgColor: '#FFF9C4', bodyBgColor: '#FFFDE7' },
-    { id: 'calm', label: '좋음', mainEmoji: 'public/emotions/02_calm_평온.png', bgColor: '#E8F5E9', bodyBgColor: '#F0FDF4' },
-    { id: 'normal', label: '보통', mainEmoji: 'public/emotions/03_normal_보통.png', bgColor: '#F3F4F6', bodyBgColor: '#F8FAFC' },
-    { id: 'sad', label: '나쁨', mainEmoji: 'public/emotions/04_sad_우울.png', bgColor: '#E3F2FD', bodyBgColor: '#EFF6FF' },
-    { id: 'angry', label: '아주 나쁨', mainEmoji: 'public/emotions/05_angry_화남.png', bgColor: '#FFEBEE', bodyBgColor: '#FEF2F2' }
+    { id: 'happy', label: '아주 좋음', mainEmoji: './public/emotions/01_happy_행복.png', bgColor: '#FFF9C4', bodyBgColor: '#FFFDE7' },
+    { id: 'calm', label: '좋음', mainEmoji: './public/emotions/02_calm_평온.png', bgColor: '#E8F5E9', bodyBgColor: '#F0FDF4' },
+    { id: 'normal', label: '보통', mainEmoji: './public/emotions/03_normal_보통.png', bgColor: '#F3F4F6', bodyBgColor: '#F8FAFC' },
+    { id: 'sad', label: '나쁨', mainEmoji: './public/emotions/04_sad_우울.png', bgColor: '#E3F2FD', bodyBgColor: '#EFF6FF' },
+    { id: 'angry', label: '아주 나쁨', mainEmoji: './public/emotions/05_angry_화남.png', bgColor: '#FFEBEE', bodyBgColor: '#FEF2F2' }
   ];
 
   const emotionButtons = document.querySelectorAll('.emotion-btn');
