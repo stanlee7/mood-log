@@ -339,10 +339,11 @@ body {
 
 .save-btn {
   width: 100%; /* 요구사항: 가로 꽉 차게 배치 */
-  padding: 16px;
+  min-height: 52px; /* 모바일 터치 영역 최소 44px 이상 확보 */
+  padding: 18px;
   border: none;
   border-radius: 14px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   font-family: inherit;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
