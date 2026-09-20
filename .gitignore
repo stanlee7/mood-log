@@ -1,0 +1,12 @@
+# OS Generated Files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+
+# Gemini / Antigravity System Logs
+.gemini/
+*.log
