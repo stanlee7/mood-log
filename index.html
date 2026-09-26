@@ -29,38 +29,34 @@
 <body>
   <main class="app-container">
     <div class="card">
-      <!-- ① 상단 오늘 날짜 (클릭 시 표시되는 버튼 형식) -->
-      <header class="date-header">
-        <button type="button" id="date-toggle-btn" class="date-header-btn" aria-expanded="false">
-          <span class="date-icon"><i class="fa-regular fa-calendar"></i></span>
-          <span id="date-placeholder" class="date-placeholder">오늘 날짜 보기</span>
-          <h1 id="current-date" class="date-text hidden"></h1>
-        </button>
+      <!-- ① 상단 타이틀 -->
+      <header class="app-header">
+        <h1 class="app-title">오늘의 감정 기록</h1>
+        <p class="app-subtitle">기분을 고르고, 한 줄만 남겨보세요</p>
       </header>
 
-      <!-- ② 가운데 큰 감정 표시 영역 (비워둠) -->
+      <!-- ② 가운데 큰 감정 표시 영역 -->
       <section id="emotion-display-area" class="emotion-display-area" aria-label="선택된 감정 표시 영역">
         <div class="placeholder-box">
-          <span class="placeholder-icon"><i class="fa-regular fa-face-smile"></i></span>
-          <p class="placeholder-text">오늘의 감정을 선택해보세요</p>
+          <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
+          <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
         </div>
       </section>
 
       <!-- ③ 감정 선택 버튼 가로 한 줄 -->
       <section class="emotion-selection-section">
-        <p class="section-label">오늘 기분은 어땠나요?</p>
         <div class="emotion-button-group">
           <div class="emotion-item">
-            <button type="button" class="emotion-btn" data-emotion="happy" aria-label="아주 좋음">
-              <img src="./public/emotions/01_happy_행복.png" alt="아주 좋음" />
+            <button type="button" class="emotion-btn" data-emotion="happy" aria-label="행복">
+              <img src="./public/emotions/01_happy_행복.png" alt="행복" />
             </button>
-            <span class="emotion-label">아주 좋음</span>
+            <span class="emotion-label">행복</span>
           </div>
           <div class="emotion-item">
-            <button type="button" class="emotion-btn" data-emotion="calm" aria-label="좋음">
-              <img src="./public/emotions/02_calm_평온.png" alt="좋음" />
+            <button type="button" class="emotion-btn" data-emotion="calm" aria-label="평온">
+              <img src="./public/emotions/02_calm_평온.png" alt="평온" />
             </button>
-            <span class="emotion-label">좋음</span>
+            <span class="emotion-label">평온</span>
           </div>
           <div class="emotion-item">
             <button type="button" class="emotion-btn" data-emotion="normal" aria-label="보통">
@@ -69,45 +65,46 @@
             <span class="emotion-label">보통</span>
           </div>
           <div class="emotion-item">
-            <button type="button" class="emotion-btn" data-emotion="sad" aria-label="나쁨">
-              <img src="./public/emotions/04_sad_우울.png" alt="나쁨" />
+            <button type="button" class="emotion-btn" data-emotion="sad" aria-label="우울">
+              <img src="./public/emotions/04_sad_우울.png" alt="우울" />
             </button>
-            <span class="emotion-label">나쁨</span>
+            <span class="emotion-label">우울</span>
           </div>
           <div class="emotion-item">
-            <button type="button" class="emotion-btn" data-emotion="angry" aria-label="아주 나쁨">
-              <img src="./public/emotions/05_angry_화남.png" alt="아주 나쁨" />
+            <button type="button" class="emotion-btn" data-emotion="angry" aria-label="화남">
+              <img src="./public/emotions/05_angry_화남.png" alt="화남" />
             </button>
-            <span class="emotion-label">아주 나쁨</span>
+            <span class="emotion-label">화남</span>
           </div>
         </div>
       </section>
 
-      <!-- ④ 한 줄 기록을 적는 입력 폼 자리 -->
+      <!-- ④ 한 줄 기록을 적는 입력 폼 -->
       <section class="note-input-section">
-        <label for="mood-note" class="section-label">오늘 하루를 한 줄로 기록해 보세요</label>
+        <label for="mood-note" class="section-label">오늘 어떤 하루였나요?</label>
         <div class="input-wrapper">
           <textarea 
             id="mood-note" 
             class="mood-textarea" 
-            placeholder="오늘 이 감정을 느낀 순간을 한 줄로 적어보세요"
+            placeholder="예) 오랜만에 산책했더니 기분이 가벼워졌다"
             rows="3"
-            maxlength="100"
+            maxlength="60"
           ></textarea>
-          <span class="char-count" id="char-count">0 / 100</span>
+          <span class="char-count" id="char-count">0 / 60</span>
         </div>
       </section>
 
-      <!-- ⑤ 맨 아래 저장 버튼 자리 -->
+      <!-- ⑤ 저장 버튼 -->
       <footer class="action-footer">
         <button type="button" class="save-btn" id="save-btn" disabled>
-          <span>기록 저장하기</span>
+          <span>기록 저장</span>
         </button>
+        <p class="save-helper-text" id="save-helper">감정을 먼저 고르면 저장할 수 있어요</p>
       </footer>
 
-      <!-- ⑥ 기록된 감정 히스토리 목록 (최신순) -->
+      <!-- ⑥ 지난 기록 히스토리 목록 (최신순) -->
       <section class="history-section">
-        <h2 class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> 감정 기록 모아보기</h2>
+        <h2 class="history-title">지난 기록</h2>
         <div id="history-list" class="history-list">
           <!-- app.js에서 최신순으로 동적 렌더링 -->
         </div>

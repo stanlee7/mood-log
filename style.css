@@ -36,69 +36,25 @@ body {
   gap: 24px;
 }
 
-/* ① 상단 오늘 날짜 (클릭 시 표시되는 버튼 형식) */
-.date-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ① 상단 타이틀 헤더 */
+.app-header {
+  text-align: center;
   padding-bottom: 4px;
 }
 
-.date-header-btn {
-  background: #f8f9fa;
-  border: 1px solid #e5e8eb;
-  border-radius: 20px;
-  padding: 8px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  outline: none;
-  font-family: inherit;
-  transition: all 0.2s ease;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.date-header-btn:hover {
-  background-color: #f1f3f5;
-  border-color: #d1d6db;
-}
-
-.date-header-btn:active {
-  transform: scale(0.97);
-}
-
-.date-icon {
-  color: #3182f6;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-}
-
-.date-placeholder {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #6b7684;
-  transition: opacity 0.2s ease;
-}
-
-.date-placeholder.hidden {
-  display: none;
-}
-
-.date-text {
-  font-size: 1.05rem;
-  font-weight: 700;
+.app-title {
+  font-size: 1.35rem;
+  font-weight: 800;
   color: #191f28;
-  letter-spacing: -0.3px;
-  opacity: 1;
-  transition: opacity 0.25 ease;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
 }
 
-.date-text.hidden {
-  display: none;
-  opacity: 0;
+.app-subtitle {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #8b95a1;
+  letter-spacing: -0.2px;
 }
 
 /* ② 가운데 큰 감정 표시 영역 */
@@ -161,18 +117,20 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #b0b8c1;
 }
 
-.placeholder-icon {
-  font-size: 2.5rem;
-  opacity: 0.7;
+.placeholder-text-main {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7684;
 }
 
-.placeholder-text {
-  font-size: 0.9rem;
+.placeholder-text-sub {
+  font-size: 0.82rem;
   font-weight: 500;
+  color: #b0b8c1;
 }
 
 /* Common Section Label */
@@ -313,7 +271,7 @@ body {
   box-shadow: 0 0 0 3.5px rgba(49, 130, 246, 0.12);
 }
 
-/* 요구사항: 오른쪽 아래 '0 / 100' 형태 글자 수 표시 */
+/* 요구사항: 오른쪽 아래 '0 / 60' 형태 글자 수 표시 */
 .char-count {
   position: absolute;
   right: 14px;
@@ -325,16 +283,17 @@ body {
   transition: color 0.2s ease;
 }
 
-/* 요구사항 3: 글자 수가 90자를 넘으면 주황색 강조 */
+/* 요구사항: 글자 수가 한도 근처면 주황색 강조 */
 .char-count.warning {
   color: #ff9500;
   font-weight: 700;
 }
 
-/* ⑤ 맨 아래 저장 버튼 자리 */
+/* ⑤ 저장 버튼 */
 .action-footer {
   width: 100%;
   margin-top: 4px;
+  text-align: center;
 }
 
 .save-btn {
@@ -352,33 +311,46 @@ body {
   align-items: center;
 }
 
-/* 요구사항 1: 감정을 선택하기 전 회색 비활성 상태 */
+/* 요구사항: 감정을 선택하기 전 회색 비활성 상태 */
 .save-btn:disabled {
-  background-color: #e5e8eb;
-  color: #b0b8c1;
+  background: linear-gradient(135deg, #c3b8e8, #a8b8e8);
+  color: rgba(255, 255, 255, 0.7);
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
 }
 
-/* 감정을 선택했을 때 파란색 활성화 상태 */
+/* 감정을 선택했을 때 보라색 그라데이션 활성화 상태 */
 .save-btn:not(:disabled) {
-  background-color: #3182f6;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.22);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
 }
 
 .save-btn:not(:disabled):hover {
-  background-color: #1b64da;
-  box-shadow: 0 6px 16px rgba(49, 130, 246, 0.3);
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4);
 }
 
 .save-btn:not(:disabled):active {
   transform: scale(0.98);
 }
 
-/* ⑥ 기록된 감정 히스토리 목록 (최신순) */
+/* 저장 버튼 하단 도움말 텍스트 */
+.save-helper-text {
+  font-size: 0.78rem;
+  color: #b0b8c1;
+  margin-top: 10px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.save-helper-text.hidden {
+  opacity: 0;
+}
+
+/* ⑥ 지난 기록 히스토리 목록 (최신순) */
 .history-section {
   width: 100%;
   margin-top: 8px;

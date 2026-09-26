@@ -1,51 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ① 오늘 날짜 계산 및 요소 참조
-  const dateElement = document.getElementById('current-date');
-  const datePlaceholder = document.getElementById('date-placeholder');
-  const dateToggleBtn = document.getElementById('date-toggle-btn');
-
-  if (dateElement) {
-    const today = new Date();
-    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const date = today.getDate();
-    const dayName = days[today.getDay()];
-
-    dateElement.textContent = `${year}년 ${month}월 ${date}일 ${dayName}`;
-  }
-
-  // 상단 날짜 클릭 이벤트: 첫 페이지에서는 감춰져 있다가 클릭하면 날짜 표시/토글
-  if (dateToggleBtn && dateElement && datePlaceholder) {
-    dateToggleBtn.addEventListener('click', () => {
-      const isHidden = dateElement.classList.contains('hidden');
-      
-      if (isHidden) {
-        dateElement.classList.remove('hidden');
-        datePlaceholder.classList.add('hidden');
-        dateToggleBtn.setAttribute('aria-expanded', 'true');
-      } else {
-        dateElement.classList.add('hidden');
-        datePlaceholder.classList.remove('hidden');
-        dateToggleBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
 
   // 감정 데이터 배열 (mainEmoji 경로, cardBgColor 및 bodyBgColor 포함)
   const emotions = [
-    { id: 'happy', label: '아주 좋음', mainEmoji: './public/emotions/01_happy_행복.png', bgColor: '#FFF9C4', bodyBgColor: '#FFFDE7' },
-    { id: 'calm', label: '좋음', mainEmoji: './public/emotions/02_calm_평온.png', bgColor: '#E8F5E9', bodyBgColor: '#F0FDF4' },
+    { id: 'happy', label: '행복', mainEmoji: './public/emotions/01_happy_행복.png', bgColor: '#FFF9C4', bodyBgColor: '#FFFDE7' },
+    { id: 'calm', label: '평온', mainEmoji: './public/emotions/02_calm_평온.png', bgColor: '#E8F5E9', bodyBgColor: '#F0FDF4' },
     { id: 'normal', label: '보통', mainEmoji: './public/emotions/03_normal_보통.png', bgColor: '#F3F4F6', bodyBgColor: '#F8FAFC' },
-    { id: 'sad', label: '나쁨', mainEmoji: './public/emotions/04_sad_우울.png', bgColor: '#E3F2FD', bodyBgColor: '#EFF6FF' },
-    { id: 'angry', label: '아주 나쁨', mainEmoji: './public/emotions/05_angry_화남.png', bgColor: '#FFEBEE', bodyBgColor: '#FEF2F2' }
+    { id: 'sad', label: '우울', mainEmoji: './public/emotions/04_sad_우울.png', bgColor: '#E3F2FD', bodyBgColor: '#EFF6FF' },
+    { id: 'angry', label: '화남', mainEmoji: './public/emotions/05_angry_화남.png', bgColor: '#FFEBEE', bodyBgColor: '#FEF2F2' }
   ];
 
   const emotionButtons = document.querySelectorAll('.emotion-btn');
   const emotionItems = document.querySelectorAll('.emotion-item');
   const emotionDisplayArea = document.getElementById('emotion-display-area');
   const saveBtn = document.getElementById('save-btn');
+  const saveHelper = document.getElementById('save-helper');
   const moodNote = document.getElementById('mood-note');
   const charCount = document.getElementById('char-count');
   const historyList = document.getElementById('history-list');
@@ -68,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saveBtn) {
           saveBtn.disabled = true;
         }
+        if (saveHelper) saveHelper.classList.remove('hidden');
 
         // 전체 화면 배경색 기본값으로 원복
         document.body.style.backgroundColor = '#f3f4f6';
@@ -78,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
           emotionDisplayArea.classList.remove('has-emotion');
           emotionDisplayArea.innerHTML = `
             <div class="placeholder-box">
-              <span class="placeholder-icon"><i class="fa-regular fa-face-smile"></i></span>
-              <p class="placeholder-text">오늘의 감정을 선택해보세요</p>
+              <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
+              <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
             </div>
           `;
         }
@@ -96,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saveBtn) {
           saveBtn.disabled = false;
         }
+        if (saveHelper) saveHelper.classList.add('hidden');
 
         if (selectedEmotion) {
           // 전체 화면 배경색을 감정 테마에 맞춰 변경
@@ -125,13 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 150);
     });
 
-    // 3) 글자 수가 90자를 넘으면 '0 / 100' 표시를 주황색으로 변경
+    // 3) 글자 수 표시 및 한도 근처 경고
     if (charCount) {
       moodNote.addEventListener('input', () => {
         const currentLength = moodNote.value.length;
-        charCount.textContent = `${currentLength} / 100`;
+        charCount.textContent = `${currentLength} / 60`;
 
-        if (currentLength >= 90) {
+        if (currentLength >= 50) {
           charCount.classList.add('warning');
         } else {
           charCount.classList.remove('warning');
@@ -217,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedDraft = DrawerStorage.getDraftNote();
     if (savedDraft) {
       moodNote.value = savedDraft;
-      if (charCount) charCount.textContent = `${savedDraft.length} / 100`;
+      if (charCount) charCount.textContent = `${savedDraft.length} / 60`;
     }
   }
 
@@ -272,8 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
     moodNote.addEventListener('input', () => {
       const currentLength = moodNote.value.length;
       if (charCount) {
-        charCount.textContent = `${currentLength} / 100`;
-        if (currentLength >= 90) {
+        charCount.textContent = `${currentLength} / 60`;
+        if (currentLength >= 50) {
           charCount.classList.add('warning');
         } else {
           charCount.classList.remove('warning');
@@ -310,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 입력창 및 감정 선택 초기화
       if (moodNote) moodNote.value = '';
-      if (charCount) charCount.textContent = '0 / 100';
+      if (charCount) charCount.textContent = '0 / 60';
 
       selectedEmotion = null;
       emotionButtons.forEach(btn => btn.classList.remove('selected'));
@@ -323,13 +293,14 @@ document.addEventListener('DOMContentLoaded', () => {
         emotionDisplayArea.classList.remove('has-emotion');
         emotionDisplayArea.innerHTML = `
           <div class="placeholder-box">
-            <span class="placeholder-icon"><i class="fa-regular fa-face-smile"></i></span>
-            <p class="placeholder-text">오늘의 감정을 선택해보세요</p>
+            <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
+            <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
           </div>
         `;
       }
 
       saveBtn.disabled = true;
+      if (saveHelper) saveHelper.classList.remove('hidden');
 
       // 히스토리 리스트 갱신
       renderHistory();
