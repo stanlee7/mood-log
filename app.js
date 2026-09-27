@@ -175,6 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     clearDraftNote: () => {
       localStorage.removeItem(KEYS.DRAFT_NOTE);
+    },
+    // 5) 특정 기록 삭제
+    deleteLog: (id) => {
+      const logs = DrawerStorage.getLogs().filter(log => log.id !== id);
+      try {
+        localStorage.setItem(KEYS.LOGS, JSON.stringify(logs));
+        DrawerStorage.updateDrawerInfo(logs);
+      } catch (e) {
+        console.error('Failed to delete log from LocalStorage:', e);
+      }
+      return logs;
     }
   };
 
@@ -213,12 +224,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="history-content">
           <div class="history-header-row">
             <span class="history-emotion-name">${log.emotion.label}</span>
-            <span class="history-date">${log.date}</span>
+            <div class="history-header-right">
+              <span class="history-date">${log.date}</span>
+              <button type="button" class="delete-log-btn" data-id="${log.id}" aria-label="기록 삭제" title="기록 삭제">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
           </div>
           <p class="history-note">${log.note ? escapeHtml(log.note) : '<span style="color: #b0b8c1; font-style: italic;">(작성한 메모가 없습니다)</span>'}</p>
         </div>
       </div>
     `).join('');
+
+    // 삭제 버튼 클릭 이벤트 등록
+    const deleteBtns = historyList.querySelectorAll('.delete-log-btn');
+    deleteBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = Number(btn.getAttribute('data-id'));
+        if (confirm('이 감정 기록을 삭제하시겠어요?')) {
+          savedLogs = DrawerStorage.deleteLog(id);
+          renderHistory();
+        }
+      });
+    });
   };
 
   // XSS 방지 이스케이프 함수

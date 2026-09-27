@@ -447,11 +447,41 @@ body {
   color: #191f28;
 }
 
+.history-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .history-date {
   font-size: 0.75rem;
   color: #8b95a1;
   font-weight: 500;
   white-space: nowrap;
+}
+
+.delete-log-btn {
+  background: none;
+  border: none;
+  color: #b0b8c1;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.delete-log-btn:hover {
+  color: #f04452;
+  background-color: #fee2e2;
+}
+
+.delete-log-btn:active {
+  transform: scale(0.9);
 }
 
 .history-note {
