@@ -18,72 +18,78 @@ document.addEventListener('DOMContentLoaded', () => {
   const charCount = document.getElementById('char-count');
   const historyList = document.getElementById('history-list');
 
+  // 선택 상태 (감정 id 문자열 또는 null)
   let selectedEmotion = null;
 
-  // 1) 감정 선택 및 토글 해제 기능
+  // 단일 상태(selectedEmotion)를 기반으로 UI 전체를 그리는 함수
+  const updateEmotionUI = () => {
+    const currentEmotion = emotions.find(e => e.id === selectedEmotion);
+
+    // 1) 버튼 및 아이템 selected 클래스 동기화
+    emotionButtons.forEach((btn) => {
+      const parentItem = btn.closest('.emotion-item');
+      const btnId = btn.getAttribute('data-emotion');
+
+      if (btnId === selectedEmotion) {
+        btn.classList.add('selected');
+        if (parentItem) parentItem.classList.add('selected');
+      } else {
+        btn.classList.remove('selected');
+        if (parentItem) parentItem.classList.remove('selected');
+      }
+    });
+
+    if (currentEmotion) {
+      // 2) 선택된 감정이 있는 경우 UI 반영
+      document.body.style.backgroundColor = currentEmotion.bodyBgColor;
+
+      if (emotionDisplayArea) {
+        emotionDisplayArea.style.backgroundColor = currentEmotion.bgColor;
+        emotionDisplayArea.classList.add('has-emotion');
+        emotionDisplayArea.innerHTML = `
+          <div class="selected-emotion-preview">
+            <img src="${currentEmotion.mainEmoji}" alt="${currentEmotion.label}" />
+            <span class="selected-emotion-title">${currentEmotion.label}</span>
+          </div>
+        `;
+      }
+
+      if (saveBtn) saveBtn.disabled = false;
+      if (saveHelper) saveHelper.classList.add('hidden');
+    } else {
+      // 3) 선택이 해제되거나 없는 경우 (기본 초기화)
+      document.body.style.backgroundColor = '#f3f4f6';
+
+      if (emotionDisplayArea) {
+        emotionDisplayArea.style.backgroundColor = '#f9fafb';
+        emotionDisplayArea.classList.remove('has-emotion');
+        emotionDisplayArea.innerHTML = `
+          <div class="placeholder-box">
+            <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
+            <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
+          </div>
+        `;
+      }
+
+      if (saveBtn) saveBtn.disabled = true;
+      if (saveHelper) saveHelper.classList.remove('hidden');
+    }
+  };
+
+  // 1) 감정 버튼 클릭 시 selectedEmotion 상태 변경 (토글 기능 포함)
   emotionButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      const parentItem = button.closest('.emotion-item');
-      const isAlreadySelected = button.classList.contains('selected');
+      const clickedId = button.getAttribute('data-emotion');
 
-      // 기존 선택 상태 모두 해제
-      emotionButtons.forEach(btn => btn.classList.remove('selected'));
-      emotionItems.forEach(item => item.classList.remove('selected'));
-
-      if (isAlreadySelected) {
-        // [토글 해제] 이미 선택된 감정 버튼을 다시 누른 경우
+      // 이미 선택된 감정이면 토글 해제(null), 아니면 새로 선택된 id 할당
+      if (selectedEmotion === clickedId) {
         selectedEmotion = null;
-        if (saveBtn) {
-          saveBtn.disabled = true;
-        }
-        if (saveHelper) saveHelper.classList.remove('hidden');
-
-        // 전체 화면 배경색 기본값으로 원복
-        document.body.style.backgroundColor = '#f3f4f6';
-
-        // 감정 표시 영역 초기화
-        if (emotionDisplayArea) {
-          emotionDisplayArea.style.backgroundColor = '#f9fafb';
-          emotionDisplayArea.classList.remove('has-emotion');
-          emotionDisplayArea.innerHTML = `
-            <div class="placeholder-box">
-              <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
-              <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
-            </div>
-          `;
-        }
       } else {
-        // [신규 선택] 감정을 새로 선택한 경우
-        button.classList.add('selected');
-        if (parentItem) {
-          parentItem.classList.add('selected');
-        }
-
-        const emotionId = button.getAttribute('data-emotion');
-        selectedEmotion = emotions.find(e => e.id === emotionId);
-
-        if (saveBtn) {
-          saveBtn.disabled = false;
-        }
-        if (saveHelper) saveHelper.classList.add('hidden');
-
-        if (selectedEmotion) {
-          // 전체 화면 배경색을 감정 테마에 맞춰 변경
-          document.body.style.backgroundColor = selectedEmotion.bodyBgColor;
-
-          // 선택된 감정에 맞는 카드 내부 배경색(bgColor) 적용 및 화면 갱신
-          if (emotionDisplayArea) {
-            emotionDisplayArea.style.backgroundColor = selectedEmotion.bgColor;
-            emotionDisplayArea.classList.add('has-emotion');
-            emotionDisplayArea.innerHTML = `
-              <div class="selected-emotion-preview">
-                <img src="${selectedEmotion.mainEmoji}" alt="${selectedEmotion.label}" />
-                <span class="selected-emotion-title">${selectedEmotion.label}</span>
-              </div>
-            `;
-          }
-        }
+        selectedEmotion = clickedId;
       }
+
+      // 단일 상태 기반으로 UI 업데이트
+      updateEmotionUI();
     });
   });
 
@@ -289,6 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
     saveBtn.addEventListener('click', () => {
       if (!selectedEmotion) return;
 
+      const currentEmotion = emotions.find(e => e.id === selectedEmotion);
+      if (!currentEmotion) return;
+
       const now = new Date();
       const month = now.getMonth() + 1;
       const date = now.getDate();
@@ -298,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const newLog = {
         id: Date.now(),
-        emotion: selectedEmotion,
+        emotion: currentEmotion,
         note: moodNote ? moodNote.value.trim() : '',
         date: formattedDate
       };
@@ -307,29 +316,13 @@ document.addEventListener('DOMContentLoaded', () => {
       savedLogs = DrawerStorage.saveLog(newLog);
       DrawerStorage.clearDraftNote();
 
-      // 입력창 및 감정 선택 초기화
+      // 입력창 초기화
       if (moodNote) moodNote.value = '';
       if (charCount) charCount.textContent = '0 / 60';
 
+      // 감정 선택 상태 초기화 및 단일 상태 UI 반영
       selectedEmotion = null;
-      emotionButtons.forEach(btn => btn.classList.remove('selected'));
-      emotionItems.forEach(item => item.classList.remove('selected'));
-
-      // 배경 및 표시 영역 초기화
-      document.body.style.backgroundColor = '#f3f4f6';
-      if (emotionDisplayArea) {
-        emotionDisplayArea.style.backgroundColor = '#f9fafb';
-        emotionDisplayArea.classList.remove('has-emotion');
-        emotionDisplayArea.innerHTML = `
-          <div class="placeholder-box">
-            <p class="placeholder-text-main">아직 고른 감정이 없어요</p>
-            <p class="placeholder-text-sub">아래에서 오늘의 기분을 골라주세요</p>
-          </div>
-        `;
-      }
-
-      saveBtn.disabled = true;
-      if (saveHelper) saveHelper.classList.remove('hidden');
+      updateEmotionUI();
 
       // 히스토리 리스트 갱신
       renderHistory();
